@@ -1,4 +1,4 @@
-# MercadoScope — Inteligência de Preços para Portfólio
+# MercadoScope - Inteligência de Preços para Portfólio
 
 **Versão:** 1.0.0  
 **Nível:** Intermediário  
