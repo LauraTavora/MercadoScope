@@ -1,0 +1,42 @@
+# Ambiente virtual
+.venv/
+venv/
+
+# Variáveis privadas
+.env
+.env.local
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Banco local
+*.db
+*.sqlite
+*.sqlite3
+
+# Relatórios e arquivos gerados
+exports/
+reports/
+downloads/
+
+# IDE
+.vscode/
+.idea/
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Metadados gerados pelo Python
+*.egg-info/
+build/
+dist/

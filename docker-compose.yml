@@ -1,0 +1,13 @@
+services:
+  mercadoscope:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: sqlite:////app/data/mercadoscope.db
+      SCRAPER_PROVIDER: ${SCRAPER_PROVIDER:-mock}
+      SCRAPING_ENABLED: ${SCRAPING_ENABLED:-false}
+      MELI_ACCESS_TOKEN: ${MELI_ACCESS_TOKEN:-}
+    volumes:
+      - ./data:/app/data
+    restart: unless-stopped

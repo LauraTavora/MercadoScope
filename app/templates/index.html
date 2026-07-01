@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ settings.app_name }} — Inteligência de Preços</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js" defer></script>
+  <script src="/static/app.js" defer></script>
+</head>
+<body data-tenant="{{ tenant.slug }}">
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="brand"><span class="brand-mark">M</span><span>MercadoScope</span></div>
+      <nav>
+        <a class="nav-item active" href="#dashboard">Visão geral</a>
+        <a class="nav-item" href="#new-job">Nova coleta</a>
+        <a class="nav-item" href="#history">Histórico</a>
+        <a class="nav-item" href="/docs">API Docs</a>
+      </nav>
+      <div class="plan-card">
+        <span class="eyebrow">Plano atual</span>
+        <strong>{{ tenant.plan.name }}</strong>
+        <small>Até {{ tenant.plan.max_items_per_job }} itens e {{ tenant.plan.max_pages_per_job }} páginas por coleta.</small>
+      </div>
+    </aside>
+
+    <main>
+      <header class="topbar">
+        <div>
+          <span class="eyebrow">Tenant: {{ tenant.slug }}</span>
+          <h1>Inteligência de preços</h1>
+        </div>
+        <span class="provider-pill">Provedor: {{ settings.scraper_provider }}</span>
+      </header>
+
+      <section id="dashboard" class="hero-grid">
+        <article class="hero-card">
+          <span class="eyebrow">Monitoramento de mercado</span>
+          <h2>Transforme resultados públicos em decisões de preço.</h2>
+          <p>Pesquise uma categoria, acompanhe o job, compare preços e exporte o resultado em CSV ou PDF.</p>
+          <a class="button primary" href="#new-job">Criar coleta</a>
+        </article>
+        <article class="metric-card">
+          <span>Limite por job</span><strong>{{ tenant.plan.max_items_per_job }}</strong><small>produtos</small>
+        </article>
+        <article class="metric-card">
+          <span>Páginas</span><strong>{{ tenant.plan.max_pages_per_job }}</strong><small>máximo do plano</small>
+        </article>
+      </section>
+
+      <section id="new-job" class="panel">
+        <div class="panel-header">
+          <div><span class="eyebrow">Automação</span><h2>Nova coleta</h2></div>
+          <span class="hint">Sem login e sem contorno de bloqueios</span>
+        </div>
+        <form id="job-form" class="job-form">
+          <label>
+            <span>Produto ou categoria</span>
+            <input id="query" name="query" required minlength="2" maxlength="200" placeholder="Ex.: notebook gamer">
+          </label>
+          <label>
+            <span>URL de categoria (opcional)</span>
+            <input id="category_url" name="category_url" type="url" placeholder="https://lista.mercadolivre.com.br/...">
+          </label>
+          <div class="form-row">
+            <label><span>Páginas</span><input id="max_pages" name="max_pages" type="number" min="1" max="{{ tenant.plan.max_pages_per_job }}" value="1"></label>
+            <label><span>Ordenação</span>
+              <select id="sort" name="sort">
+                <option value="relevance">Relevância</option>
+                <option value="price_asc">Menor preço</option>
+                <option value="price_desc">Maior preço</option>
+              </select>
+            </label>
+          </div>
+          <button class="button primary" type="submit">Executar automação</button>
+        </form>
+        <div id="job-feedback" class="feedback hidden"></div>
+      </section>
+
+      <section id="live-results" class="panel hidden">
+        <div class="panel-header">
+          <div><span class="eyebrow">Execução atual</span><h2 id="live-title">Processando</h2></div>
+          <span id="live-status" class="status pending">pending</span>
+        </div>
+        <div class="progress-track"><div id="progress-bar" class="progress-bar" style="width:0%"></div></div>
+        <div class="result-actions hidden" id="result-actions">
+          <a id="csv-link" class="button secondary" href="#">Baixar CSV</a>
+          <a id="pdf-link" class="button secondary" href="#">Baixar relatório PDF</a>
+        </div>
+        <div class="analytics-grid hidden" id="analytics">
+          <div class="chart-card"><canvas id="price-chart"></canvas></div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>#</th><th>Produto</th><th>Preço</th><th>Nota</th><th>Vendas</th></tr></thead>
+              <tbody id="products-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section id="history" class="panel">
+        <div class="panel-header"><div><span class="eyebrow">Últimas execuções</span><h2>Histórico</h2></div></div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Consulta</th><th>Provedor</th><th>Status</th><th>Itens</th><th>Data</th></tr></thead>
+            <tbody>
+              {% for job in jobs %}
+              <tr>
+                <td>{{ job.query }}</td><td>{{ job.provider }}</td><td><span class="status {{ job.status }}">{{ job.status }}</span></td>
+                <td>{{ job.item_count }}</td><td>{{ job.created_at.strftime('%d/%m/%Y %H:%M') }}</td>
+              </tr>
+              {% else %}<tr><td colspan="5">Nenhuma execução ainda.</td></tr>{% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <footer>MercadoScope v{{ settings.app_version }} · Projeto de portfólio · {{ tenant.name }}</footer>
+    </main>
+  </div>
+
+  <div id="tour" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="tour-title">
+    <div class="modal-card">
+      <span class="eyebrow">Bem-vindo ao MercadoScope</span>
+      <h2 id="tour-title">Seu primeiro monitor de preços</h2>
+      <p>1. Digite um produto. 2. Execute a coleta. 3. Analise a distribuição. 4. Exporte CSV e PDF.</p>
+      <button id="close-tour" class="button primary">Começar</button>
+    </div>
+  </div>
+</body>
+</html>
