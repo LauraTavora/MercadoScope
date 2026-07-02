@@ -1,4 +1,4 @@
-# MercadoScope — Inteligência de Preços para Portfólio
+# MercadoScope - Inteligência de Preços para Portfólio
 
 **Versão:** 1.0.0  
 **Nível:** Intermediário  
@@ -150,3 +150,21 @@ pytest -q
 - Comparação de múltiplos marketplaces.
 - Webhooks e integrações com Slack/WhatsApp.
 - Dashboard de séries históricas.
+
+---
+
+## Contato
+
+Para dúvidas, sugestões, oportunidades profissionais, autorização de uso ou informações sobre o projeto, entre em contato:
+
+- GitHub: [@LauraTavora](https://github.com/LauraTavora)
+- LinkedIn: [Laura Távora](https://www.linkedin.com/in/laura-francisco-távora-946a622b3/?skipRedirect=true)
+- E-mail: `laurafranciscotavora5@gmail.com`
+
+---
+
+## Direitos autorais
+
+Copyright © 2026 Laura Távora.
+
+Todos os direitos reservados. Consulte o arquivo [LICENSE](LICENSE) para conhecer as condições de utilização deste projeto.
