@@ -90,7 +90,7 @@
             <table>
               <thead><tr><th>Produto</th><th>Status</th><th>Itens</th><th>Data</th><th>Ação</th></tr></thead>
               <tbody>
-                {% for job in jobs|slice(0, 5) %}
+                {% for job in jobs[:5] %}
                 <tr>
                   <td>{{ job.query }}</td>
                   <td><span class="status {{ job.status }}">{{ job.status }}</span></td>

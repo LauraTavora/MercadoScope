@@ -224,6 +224,9 @@ body {
 
 .result-actions{display:flex;gap:10px;margin:18px 0;flex-wrap:wrap}
 
+.tab-content.hidden { display: none; }
+.tab-content.active { display: block; }
+
 .analytics-section {
   display: grid;
   gap: 20px;
@@ -278,9 +281,9 @@ td a{color:var(--accent);text-decoration:none}
 }
 .link-button:hover { text-decoration: underline; }
 
-.hidden{display:none!important}
 footer{color:var(--muted);font-size:0.85rem;text-align:center;padding:28px 10px 8px}
 .modal{position:fixed;inset:0;background:rgba(17,24,39,.62);display:grid;place-items:center;padding:20px;z-index:50}
+.modal.hidden { display: none; pointer-events: none; }
 .modal-card{background:#fff;max-width:520px;padding:30px;border-radius:22px;box-shadow:0 25px 70px rgba(0,0,0,.25)}
 .modal-card h2{font-size:1.7rem}
 .modal-card p{color:var(--muted);line-height:1.6}
