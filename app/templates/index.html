@@ -12,49 +12,78 @@
   <script src="/static/app.js" defer></script>
 </head>
 <body data-tenant="{{ tenant.slug }}">
-  <div class="shell">
-    <aside class="sidebar">
-      <div class="brand"><span class="brand-mark">M</span><span>MercadoScope</span></div>
-      <nav>
-        <a class="nav-item active" href="#dashboard">Visão geral</a>
-        <a class="nav-item" href="#new-job">Nova coleta</a>
-        <a class="nav-item" href="#history">Histórico</a>
-        <a class="nav-item" href="/docs">API Docs</a>
-      </nav>
-      <div class="plan-card">
-        <span class="eyebrow">Plano atual</span>
-        <strong>{{ tenant.plan.name }}</strong>
-        <small>Até {{ tenant.plan.max_items_per_job }} itens e {{ tenant.plan.max_pages_per_job }} páginas por coleta.</small>
-      </div>
-    </aside>
-
-    <main>
-      <header class="topbar">
+  <div class="page-shell">
+    <header class="topbar-shell">
+      <div class="brand-block">
+        <div class="brand-mark">M</div>
         <div>
-          <span class="eyebrow">Tenant: {{ tenant.slug }}</span>
-          <h1>Inteligência de preços</h1>
+          <strong>MercadoScope</strong>
+          <span>Monitor de preços</span>
         </div>
-        <span class="provider-pill">Provedor: {{ settings.scraper_provider }}</span>
-      </header>
+      </div>
+      <nav class="top-nav">
+        <a class="nav-chip active" href="#dashboard">Visão geral</a>
+        <a class="nav-chip" href="#new-job">Nova coleta</a>
+        <a class="nav-chip" href="#history">Histórico</a>
+        <a class="nav-chip" href="/docs">API Docs</a>
+      </nav>
+      <div class="topbar-actions">
+        <span class="pill">Plano {{ tenant.plan.name }}</span>
+        <span class="pill muted">{{ settings.scraper_provider }}</span>
+      </div>
+    </header>
 
-      <section id="dashboard" class="hero-grid">
-        <article class="hero-card">
-          <span class="eyebrow">Monitoramento de mercado</span>
-          <h2>Transforme resultados públicos em decisões de preço.</h2>
-          <p>Pesquise uma categoria, acompanhe o job, compare preços e exporte o resultado em CSV ou PDF.</p>
-          <a class="button primary" href="#new-job">Criar coleta</a>
+    <main class="main-content">
+      <section id="dashboard" class="hero-banner">
+        <div class="hero-copy">
+          <span class="eyebrow">MONITORAMENTO DE MERCADO</span>
+          <h1>Encontre oportunidades e acompanhe preços como em uma vitrine de marketplace.</h1>
+          <p>Pesquise produtos, rode coletas automáticas e compare ofertas com um painel visual mais próximo do que os consumidores esperam hoje.</p>
+          <div class="hero-actions">
+            <a class="button primary" href="#new-job">Criar coleta</a>
+            <a class="button secondary" href="#history">Ver histórico</a>
+          </div>
+        </div>
+        <div class="hero-highlights">
+          <article class="highlight-card">
+            <span>Limite por job</span>
+            <strong>{{ tenant.plan.max_items_per_job }}</strong>
+            <small>produtos</small>
+          </article>
+          <article class="highlight-card">
+            <span>Páginas por coleta</span>
+            <strong>{{ tenant.plan.max_pages_per_job }}</strong>
+            <small>máximo do plano</small>
+          </article>
+          <article class="highlight-card accent">
+            <span>Status atual</span>
+            <strong>Pronto</strong>
+            <small>para análise rápida</small>
+          </article>
+        </div>
+      </section>
+
+      <section class="info-row">
+        <article class="info-card">
+          <h3>Busca inteligente</h3>
+          <p>Organize cada coleta com categoria, ordenação e páginas em um fluxo simples.</p>
         </article>
-        <article class="metric-card">
-          <span>Limite por job</span><strong>{{ tenant.plan.max_items_per_job }}</strong><small>produtos</small>
+        <article class="info-card">
+          <h3>Comparação visual</h3>
+          <p>Veja distribuição de preços e os melhores resultados de forma clara.</p>
         </article>
-        <article class="metric-card">
-          <span>Páginas</span><strong>{{ tenant.plan.max_pages_per_job }}</strong><small>máximo do plano</small>
+        <article class="info-card">
+          <h3>Exportação rápida</h3>
+          <p>Baixe CSV e PDF para compartilhar insights com a equipe.</p>
         </article>
       </section>
 
       <section id="new-job" class="panel">
         <div class="panel-header">
-          <div><span class="eyebrow">Automação</span><h2>Nova coleta</h2></div>
+          <div>
+            <span class="eyebrow">AUTOMAÇÃO</span>
+            <h2>Nova coleta</h2>
+          </div>
           <span class="hint">Sem login e sem contorno de bloqueios</span>
         </div>
         <form id="job-form" class="job-form">
@@ -83,7 +112,7 @@
 
       <section id="live-results" class="panel hidden">
         <div class="panel-header">
-          <div><span class="eyebrow">Execução atual</span><h2 id="live-title">Processando</h2></div>
+          <div><span class="eyebrow">EXECUÇÃO ATUAL</span><h2 id="live-title">Processando</h2></div>
           <span id="live-status" class="status pending">pending</span>
         </div>
         <div class="progress-track"><div id="progress-bar" class="progress-bar" style="width:0%"></div></div>
@@ -103,7 +132,7 @@
       </section>
 
       <section id="history" class="panel">
-        <div class="panel-header"><div><span class="eyebrow">Últimas execuções</span><h2>Histórico</h2></div></div>
+        <div class="panel-header"><div><span class="eyebrow">ÚLTIMAS EXECUÇÕES</span><h2>Histórico</h2></div></div>
         <div class="table-wrap">
           <table>
             <thead><tr><th>Consulta</th><th>Provedor</th><th>Status</th><th>Itens</th><th>Data</th></tr></thead>
@@ -125,7 +154,7 @@
 
   <div id="tour" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="tour-title">
     <div class="modal-card">
-      <span class="eyebrow">Bem-vindo ao MercadoScope</span>
+      <span class="eyebrow">BEM-VINDO AO MERCADOSCOPE</span>
       <h2 id="tour-title">Seu primeiro monitor de preços</h2>
       <p>1. Digite um produto. 2. Execute a coleta. 3. Analise a distribuição. 4. Exporte CSV e PDF.</p>
       <button id="close-tour" class="button primary">Começar</button>
