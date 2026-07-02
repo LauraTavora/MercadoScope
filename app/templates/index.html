@@ -18,134 +18,198 @@
         <div class="brand-mark">M</div>
         <div>
           <strong>MercadoScope</strong>
-          <span>Monitor de preços</span>
+          <span>Inteligência de preços</span>
         </div>
       </div>
       <nav class="top-nav">
-        <a class="nav-chip active" href="#dashboard">Visão geral</a>
-        <a class="nav-chip" href="#new-job">Nova coleta</a>
-        <a class="nav-chip" href="#history">Histórico</a>
+        <button class="nav-chip active" data-tab="home">Home</button>
+        <button class="nav-chip" data-tab="insights">Insights</button>
+        <button class="nav-chip" data-tab="history">Histórico</button>
         <a class="nav-chip" href="/docs">API Docs</a>
       </nav>
       <div class="topbar-actions">
-        <span class="pill">Plano {{ tenant.plan.name }}</span>
+        <span class="pill">{{ tenant.plan.name }}</span>
         <span class="pill muted">{{ settings.scraper_provider }}</span>
       </div>
     </header>
 
     <main class="main-content">
-      <section id="dashboard" class="hero-banner">
-        <div class="hero-copy">
-          <span class="eyebrow">MONITORAMENTO DE MERCADO</span>
-          <h1>Encontre oportunidades e acompanhe preços como em uma vitrine de marketplace.</h1>
-          <p>Pesquise produtos, rode coletas automáticas e compare ofertas com um painel visual mais próximo do que os consumidores esperam hoje.</p>
-          <div class="hero-actions">
-            <a class="button primary" href="#new-job">Criar coleta</a>
-            <a class="button secondary" href="#history">Ver histórico</a>
+      
+      <!-- HOME TAB -->
+      <section id="home-tab" class="tab-content active">
+        <section class="hero-banner">
+          <div class="hero-copy">
+            <span class="eyebrow">BEM-VINDO AO MERCADOSCOPE</span>
+            <h1>Inteligência de preços em tempo real.</h1>
+            <p>Analise produtos, compare ofertas e obtenha insights sobre tendências de preços no Mercado Livre com dashboards visuais e análises detalhadas.</p>
+            <div class="hero-actions">
+              <button class="button primary" onclick="switchTab('insights')">Iniciar análise</button>
+              <button class="button secondary" onclick="switchTab('history')">Ver histórico</button>
+            </div>
           </div>
-        </div>
-        <div class="hero-highlights">
-          <article class="highlight-card">
-            <span>Limite por job</span>
-            <strong>{{ tenant.plan.max_items_per_job }}</strong>
-            <small>produtos</small>
-          </article>
-          <article class="highlight-card">
-            <span>Páginas por coleta</span>
-            <strong>{{ tenant.plan.max_pages_per_job }}</strong>
-            <small>máximo do plano</small>
-          </article>
-          <article class="highlight-card accent">
-            <span>Status atual</span>
-            <strong>Pronto</strong>
-            <small>para análise rápida</small>
-          </article>
-        </div>
-      </section>
-
-      <section class="info-row">
-        <article class="info-card">
-          <h3>Busca inteligente</h3>
-          <p>Organize cada coleta com categoria, ordenação e páginas em um fluxo simples.</p>
-        </article>
-        <article class="info-card">
-          <h3>Comparação visual</h3>
-          <p>Veja distribuição de preços e os melhores resultados de forma clara.</p>
-        </article>
-        <article class="info-card">
-          <h3>Exportação rápida</h3>
-          <p>Baixe CSV e PDF para compartilhar insights com a equipe.</p>
-        </article>
-      </section>
-
-      <section id="new-job" class="panel">
-        <div class="panel-header">
-          <div>
-            <span class="eyebrow">AUTOMAÇÃO</span>
-            <h2>Nova coleta</h2>
+          <div class="hero-highlights">
+            <article class="highlight-card">
+              <span>Total analisado</span>
+              <strong id="total-products">0</strong>
+              <small>produtos</small>
+            </article>
+            <article class="highlight-card">
+              <span>Análises feitas</span>
+              <strong>{{ jobs|length }}</strong>
+              <small>no plano</small>
+            </article>
+            <article class="highlight-card accent">
+              <span>Limite disponível</span>
+              <strong>{{ tenant.plan.max_items_per_job }}</strong>
+              <small>por análise</small>
+            </article>
           </div>
-          <span class="hint">Sem login e sem contorno de bloqueios</span>
-        </div>
-        <form id="job-form" class="job-form">
-          <label>
-            <span>Produto ou categoria</span>
-            <input id="query" name="query" required minlength="2" maxlength="200" placeholder="Ex.: notebook gamer">
-          </label>
-          <label>
-            <span>URL de categoria (opcional)</span>
-            <input id="category_url" name="category_url" type="url" placeholder="https://lista.mercadolivre.com.br/...">
-          </label>
-          <div class="form-row">
-            <label><span>Páginas</span><input id="max_pages" name="max_pages" type="number" min="1" max="{{ tenant.plan.max_pages_per_job }}" value="1"></label>
-            <label><span>Ordenação</span>
-              <select id="sort" name="sort">
-                <option value="relevance">Relevância</option>
-                <option value="price_asc">Menor preço</option>
-                <option value="price_desc">Maior preço</option>
-              </select>
-            </label>
-          </div>
-          <button class="button primary" type="submit">Executar automação</button>
-        </form>
-        <div id="job-feedback" class="feedback hidden"></div>
-      </section>
+        </section>
 
-      <section id="live-results" class="panel hidden">
-        <div class="panel-header">
-          <div><span class="eyebrow">EXECUÇÃO ATUAL</span><h2 id="live-title">Processando</h2></div>
-          <span id="live-status" class="status pending">pending</span>
-        </div>
-        <div class="progress-track"><div id="progress-bar" class="progress-bar" style="width:0%"></div></div>
-        <div class="result-actions hidden" id="result-actions">
-          <a id="csv-link" class="button secondary" href="#">Baixar CSV</a>
-          <a id="pdf-link" class="button secondary" href="#">Baixar relatório PDF</a>
-        </div>
-        <div class="analytics-grid hidden" id="analytics">
-          <div class="chart-card"><canvas id="price-chart"></canvas></div>
+        <section class="stats-grid">
+          <article class="stat-card">
+            <div class="stat-icon">📊</div>
+            <h3>Análises precisas</h3>
+            <p>Colha dados diretamente do Mercado Livre sem bloqueios ou captchas</p>
+          </article>
+          <article class="stat-card">
+            <div class="stat-icon">📈</div>
+            <h3>Tendências visuais</h3>
+            <p>Veja gráficos em tempo real com distribuição de preços e padrões</p>
+          </article>
+          <article class="stat-card">
+            <div class="stat-icon">📥</div>
+            <h3>Exportação fácil</h3>
+            <p>Baixe relatórios em CSV ou PDF para compartilhar insights</p>
+          </article>
+        </section>
+
+        <section class="panel">
+          <div class="panel-header"><div><span class="eyebrow">ÚLTIMAS ANÁLISES</span><h2>Histórico rápido</h2></div></div>
           <div class="table-wrap">
             <table>
-              <thead><tr><th>#</th><th>Produto</th><th>Preço</th><th>Nota</th><th>Vendas</th></tr></thead>
-              <tbody id="products-body"></tbody>
+              <thead><tr><th>Produto</th><th>Status</th><th>Itens</th><th>Data</th><th>Ação</th></tr></thead>
+              <tbody>
+                {% for job in jobs|slice(0, 5) %}
+                <tr>
+                  <td>{{ job.query }}</td>
+                  <td><span class="status {{ job.status }}">{{ job.status }}</span></td>
+                  <td>{{ job.item_count }}</td>
+                  <td>{{ job.created_at.strftime('%d/%m/%Y %H:%M') }}</td>
+                  <td><button class="link-button" onclick="viewJobDetails('{{ job.id }}')">Ver</button></td>
+                </tr>
+                {% else %}<tr><td colspan="5" style="text-align:center;padding:20px;">Nenhuma análise ainda. <button class="link-button" onclick="switchTab('insights')">Comece agora</button></td></tr>{% endfor %}
+              </tbody>
             </table>
           </div>
-        </div>
+        </section>
       </section>
 
-      <section id="history" class="panel">
-        <div class="panel-header"><div><span class="eyebrow">ÚLTIMAS EXECUÇÕES</span><h2>Histórico</h2></div></div>
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th>Consulta</th><th>Provedor</th><th>Status</th><th>Itens</th><th>Data</th></tr></thead>
-            <tbody>
-              {% for job in jobs %}
-              <tr>
-                <td>{{ job.query }}</td><td>{{ job.provider }}</td><td><span class="status {{ job.status }}">{{ job.status }}</span></td>
-                <td>{{ job.item_count }}</td><td>{{ job.created_at.strftime('%d/%m/%Y %H:%M') }}</td>
-              </tr>
-              {% else %}<tr><td colspan="5">Nenhuma execução ainda.</td></tr>{% endfor %}
-            </tbody>
-          </table>
-        </div>
+      <!-- INSIGHTS TAB -->
+      <section id="insights-tab" class="tab-content hidden">
+        <section id="new-job" class="panel">
+          <div class="panel-header">
+            <div>
+              <span class="eyebrow">NOVA ANÁLISE</span>
+              <h2>Gerar insights de produtos</h2>
+            </div>
+            <span class="hint">Sem login e sem contorno de bloqueios</span>
+          </div>
+          <form id="job-form" class="job-form">
+            <label>
+              <span>Produto ou categoria</span>
+              <input id="query" name="query" required minlength="2" maxlength="200" placeholder="Ex.: notebook gamer">
+            </label>
+            <label>
+              <span>URL de categoria (opcional)</span>
+              <input id="category_url" name="category_url" type="url" placeholder="https://lista.mercadolivre.com.br/...">
+            </label>
+            <div class="form-row">
+              <label><span>Páginas</span><input id="max_pages" name="max_pages" type="number" min="1" max="{{ tenant.plan.max_pages_per_job }}" value="1"></label>
+              <label><span>Ordenação</span>
+                <select id="sort" name="sort">
+                  <option value="relevance">Relevância</option>
+                  <option value="price_asc">Menor preço</option>
+                  <option value="price_desc">Maior preço</option>
+                </select>
+              </label>
+            </div>
+            <button class="button primary" type="submit">Executar análise</button>
+          </form>
+          <div id="job-feedback" class="feedback hidden"></div>
+        </section>
+
+        <section id="live-results" class="panel hidden">
+          <div class="panel-header">
+            <div><span class="eyebrow">ANÁLISE EM ANDAMENTO</span><h2 id="live-title">Processando</h2></div>
+            <span id="live-status" class="status pending">pending</span>
+          </div>
+          <div class="progress-track"><div id="progress-bar" class="progress-bar" style="width:0%"></div></div>
+          <div class="result-actions hidden" id="result-actions">
+            <a id="csv-link" class="button secondary" href="#">Baixar CSV</a>
+            <a id="pdf-link" class="button secondary" href="#">Baixar relatório PDF</a>
+          </div>
+
+          <div class="analytics-section hidden" id="analytics">
+            <div class="stats-container">
+              <h3 class="section-title">Estatísticas</h3>
+              <div class="analytics-stats">
+                <div class="stat-box">
+                  <span>Preço médio</span>
+                  <strong id="avg-price">-</strong>
+                </div>
+                <div class="stat-box">
+                  <span>Preço mínimo</span>
+                  <strong id="min-price">-</strong>
+                </div>
+                <div class="stat-box">
+                  <span>Preço máximo</span>
+                  <strong id="max-price">-</strong>
+                </div>
+                <div class="stat-box">
+                  <span>Avaliação média</span>
+                  <strong id="avg-rating">-</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="chart-container">
+              <h3 class="section-title">Distribuição de preços</h3>
+              <div class="chart-card"><canvas id="price-chart"></canvas></div>
+            </div>
+
+            <div class="table-container">
+              <h3 class="section-title">Produtos encontrados</h3>
+              <div class="table-wrap">
+                <table>
+                  <thead><tr><th>#</th><th>Produto</th><th>Preço</th><th>Nota</th><th>Vendas</th><th>Frete</th></tr></thead>
+                  <tbody id="products-body"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <!-- HISTORY TAB -->
+      <section id="history-tab" class="tab-content hidden">
+        <section class="panel">
+          <div class="panel-header"><div><span class="eyebrow">TODAS AS ANÁLISES</span><h2>Histórico completo</h2></div></div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Consulta</th><th>Provedor</th><th>Status</th><th>Itens</th><th>Data</th><th>Ação</th></tr></thead>
+              <tbody>
+                {% for job in jobs %}
+                <tr>
+                  <td>{{ job.query }}</td><td>{{ job.provider }}</td><td><span class="status {{ job.status }}">{{ job.status }}</span></td>
+                  <td>{{ job.item_count }}</td><td>{{ job.created_at.strftime('%d/%m/%Y %H:%M') }}</td>
+                  <td><button class="link-button" onclick="viewJobDetails('{{ job.id }}')">Detalhes</button></td>
+                </tr>
+                {% else %}<tr><td colspan="6" style="text-align:center;padding:20px;">Nenhuma análise realizada ainda.</td></tr>{% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </section>
       </section>
 
       <footer>MercadoScope v{{ settings.app_version }} · Projeto de portfólio · {{ tenant.name }}</footer>
@@ -155,9 +219,9 @@
   <div id="tour" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="tour-title">
     <div class="modal-card">
       <span class="eyebrow">BEM-VINDO AO MERCADOSCOPE</span>
-      <h2 id="tour-title">Seu primeiro monitor de preços</h2>
-      <p>1. Digite um produto. 2. Execute a coleta. 3. Analise a distribuição. 4. Exporte CSV e PDF.</p>
-      <button id="close-tour" class="button primary">Começar</button>
+      <h2 id="tour-title">Comece a analisar produtos agora</h2>
+      <p>1. Acesse a aba <strong>Insights</strong>. 2. Digite um produto. 3. Aguarde a análise. 4. Explore gráficos e métricas. 5. Exporte em CSV ou PDF.</p>
+      <button id="close-tour" class="button primary">Entendido</button>
     </div>
   </div>
 </body>
